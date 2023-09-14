@@ -9,7 +9,7 @@ import (
 func main() {
 	serverPort := utils.EnvOrDefault("SERVER_PORT", "5001")
 	proxyPort := utils.EnvOrDefault("PROXY_PORT", "5000")
-	server := &ServerState{}
+	server := NewServerState()
 
 	go func() {
 		err := server.listenForProxies(":" + proxyPort)

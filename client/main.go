@@ -7,13 +7,13 @@ import (
 )
 
 func main() {
-	proxyURL, err := url.Parse("http://localhost:5001")
-	if err != nil {
-		panic(err)
-	}
 	httpClient := &http.Client{
 		Transport: &http.Transport{
-			Proxy: http.ProxyURL(proxyURL),
+			Proxy: http.ProxyURL(&url.URL{
+				Scheme: "http",
+				User: url.UserPassword("user", "1234"),
+				Host: "127.0.0.1:5001",
+			}),
 		},
 	}
 	response, err := httpClient.Get("https://example.com/")

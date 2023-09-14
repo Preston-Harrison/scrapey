@@ -16,6 +16,14 @@ func handleNonConnectMethod(w http.ResponseWriter) {
 	fmt.Fprintln(w, msg)
 }
 
+func handleBadAuthHeader(w http.ResponseWriter, err error) {
+	w.WriteHeader(403)
+	msg := err.Error()
+	w.Header().Set("Content-Type", "text/plain")
+	w.Header().Set("Content-Length", strconv.Itoa(len(msg)))
+	fmt.Fprintln(w, msg)	
+}
+
 func handleNoProxies(w http.ResponseWriter) {
 	w.WriteHeader(500)
 	msg := "No proxies available"

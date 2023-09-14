@@ -9,12 +9,14 @@ import (
 
 func main() {
 	server := utils.EnvOrDefault("SERVER_HOST", "127.0.0.1:5000")
+	channelKey := utils.EnvOrPanic("CHANNEL_KEY")
 	for {
 		log.Println("waiting for new host")
 		conn, err := net.Dial("tcp", server)
 		if err != nil {
 			panic(err)
 		}
+		attachToChannel(conn, channelKey)
 		host, err := waitForHost(conn)
 		if err != nil {
 			log.Println("failed to wait for host:", err)
@@ -41,4 +43,8 @@ func tcpForward(proxyConn net.Conn, host string) error {
 	}
 	iocopy.Between(proxyConn, hostConn)
 	return nil
+}
+
+func attachToChannel(conn net.Conn, c string) {
+	conn.Write([]byte(c))
 }
