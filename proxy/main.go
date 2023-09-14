@@ -15,7 +15,7 @@ func or(a string, b string) string {
 }
 
 func main() {
-	server := or(os.Getenv("SERVER"), "127.0.0.1:5000")
+	server := or(os.Getenv("SERVER_HOST"), "127.0.0.1:5000")
 	for {
 		log.Println("waiting for new host")
 		conn, err := net.Dial("tcp", server)

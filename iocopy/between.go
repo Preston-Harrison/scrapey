@@ -1,7 +1,6 @@
 package iocopy
 
 import (
-	"fmt"
 	"io"
 	"sync"
 )
@@ -18,7 +17,6 @@ func Between(a, b RWCloser) {
 	go func() {
 		defer wg.Done()
 		if _, err := io.Copy(b, a); err != nil {
-			fmt.Println("Ws to client error", err)
 			return
 		}
 		a.Close()
@@ -26,7 +24,6 @@ func Between(a, b RWCloser) {
 	go func() {
 		defer wg.Done()
 		if _, err := io.Copy(a, b); err != nil {
-			fmt.Println("Client to ws error", err)
 			return
 		}
 		b.Close()
