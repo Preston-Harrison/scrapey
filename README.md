@@ -27,3 +27,31 @@ The proxy component initiates a TCP connection with the server and waits for the
 
 ### Configuration
 You can configure the server's listening ports by modifying the `SERVER_PORT` and `PROXY_PORT` environment variables. Similarly, you can configure the proxy's connection details by modifying the `SERVER_HOST` environment variable.
+
+### Usage
+```bash
+# Run this on server with publicly accessable IP & ports
+./bin/server # Defaults to ports 5000 & 5001
+```
+
+```bash
+# Run this on any computer with outbound traffic enabled
+CHANNEL_KEY=some_long_secret SERVER_HOST=your_host:your_port ./bin/proxy
+```
+
+```go
+// Make your request. Note at the moment, username is ignored. Password should be the channel key.
+// This will change as it's dumb.
+func main() {
+	httpClient := &http.Client{
+		Transport: &http.Transport{
+			Proxy: http.ProxyURL(&url.URL{
+				Scheme: "https", // Using http exposes channel key.
+				User: url.UserPassword("", "your_channel_key"),
+				Host: "your_host:your_port",
+			}),
+		},
+	}
+	response, err := httpClient.Get("https://example.com/")
+}
+```
