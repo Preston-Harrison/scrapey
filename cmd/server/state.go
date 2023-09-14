@@ -81,7 +81,7 @@ func (s *ServerState) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// / Right now channel key is just parsed from the proxy authorization password.
+// Right now channel key is just parsed from the proxy authorization password.
 func parseProxyAuth(req *http.Request) (string, string, error) {
 	authHeader := req.Header.Get("Proxy-Authorization")
 	if authHeader == "" {
