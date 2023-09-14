@@ -34,7 +34,7 @@ func (s *ServerState) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 func (s *ServerState) listenForProxies(host string) error {
-	log.Println("listening for proxies on host", host)
+	log.Println("listening for proxies on host:", host)
 	l, err := net.Listen("tcp", host)
 	if err != nil {
 		return err

@@ -3,22 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
+	"scrapey/utils"
 )
 
-func or(a string, b string) string {
-	if a == "" {
-		return b
-	}
-	return a
-}
-
 func main() {
-	serverPort := or(os.Getenv("SERVER_PORT"), "5001")
-	proxyPort := or(os.Getenv("PROXY_PORT"), "5000")
-
+	serverPort := utils.EnvOrDefault("SERVER_PORT", "5001")
+	proxyPort := utils.EnvOrDefault("PROXY_PORT", "5000")
 	server := &ServerState{}
-	log.Println("server listening on port", serverPort)
 
 	go func() {
 		err := server.listenForProxies(":" + proxyPort)
@@ -27,6 +18,7 @@ func main() {
 		}
 	}()
 
+	log.Println("server listening on port:", serverPort)
 	err := http.ListenAndServe(":"+serverPort, server)
 	if err != nil {
 		log.Fatal(err)

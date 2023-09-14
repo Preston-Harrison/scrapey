@@ -5,13 +5,7 @@ import (
 	"sync"
 )
 
-type RWCloser interface {
-	io.Reader
-	io.Writer
-	io.Closer
-}
-
-func Between(a, b RWCloser) {
+func Between(a, b io.ReadWriteCloser) {
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {

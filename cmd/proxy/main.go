@@ -3,19 +3,12 @@ package main
 import (
 	"log"
 	"net"
-	"os"
 	"scrapey/iocopy"
+	"scrapey/utils"
 )
 
-func or(a string, b string) string {
-	if a == "" {
-		return b
-	}
-	return a
-}
-
 func main() {
-	server := or(os.Getenv("SERVER_HOST"), "127.0.0.1:5000")
+	server := utils.EnvOrDefault("SERVER_HOST", "127.0.0.1:5000")
 	for {
 		log.Println("waiting for new host")
 		conn, err := net.Dial("tcp", server)
@@ -24,10 +17,10 @@ func main() {
 		}
 		host, err := waitForHost(conn)
 		if err != nil {
-			log.Println(err)
+			log.Println("failed to wait for host:", err)
 			continue
 		}
-		log.Println("proxying to host", host)
+		log.Println("proxying to host:", host)
 		go tcpForward(conn, host)
 	}
 }
