@@ -30,7 +30,7 @@ func (p *ProxyList) pop() (net.Conn, bool) {
 func (p *ProxyList) push(c net.Conn) {
 	p.m.Lock()
 	defer p.m.Unlock()
-	p.conns = append(p.conns, c)
+	p.conns = append([]net.Conn{c}, p.conns...)
 }
 
 type ServerState struct {
