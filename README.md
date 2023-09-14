@@ -55,3 +55,20 @@ func main() {
 	response, err := httpClient.Get("https://example.com/")
 }
 ```
+
+## Proxy-Server interractions
+### Initial handshake
+1. The proxy connects via TCP with the server.
+2. The proxy sends a channel key in a single frame.
+3. *TODO* The server responds acknowledging the channel key is valid.
+4. The connection remains open until the server is ready to send a request.
+
+### Handling a request
+*Note, only HTTPS is supported as it's easier to implement - encryped bytes are just streamed to/from the client and proxy*  
+1. The client sends a request to the server.
+2. The server checks the `Proxy-Authentication` header for the channel key.
+3. The server finds an open proxy connection with a corresponding channel key, and aborts if there are none.
+4. The server sends a single frame of the target host to the proxy.
+5. *TODO* The proxy responds if they were able to connect with the target.
+6. The proxy opens a new connection with the server, going through the initial handshake process again in preparation for a new request.
+6. The server copies bytes to/from the proxy and client, until either closes the connection.
