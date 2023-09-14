@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains a forward proxy server that enables any computer operating within a network that allows only outbound traffic to act as a forward proxy. It achieves this by accepting proxy requests and forwarding raw bytes via TCP to a target host. The proxy server opens a TCP connection with the client, waits for a response containing a host, and then forwards bytes from the client to the target host.
+This repository contains a forward proxy server that enables any computer operating within a network that allows only outbound traffic to act as a forward proxy. It achieves this by having the proxy server open a TCP connection with the main server, and waiting for a request on the open connection. A client will proxy a request to the main server, which will use one of the open connections to send the request to the actual proxy.
 
 ## How it Works
 
