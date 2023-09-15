@@ -11,8 +11,8 @@ func main() {
 		Transport: &http.Transport{
 			Proxy: http.ProxyURL(&url.URL{
 				Scheme: "http",
-				User: url.UserPassword("user", "1234"),
-				Host: "127.0.0.1:5001",
+				User:   url.UserPassword("user", "1234"),
+				Host:   "127.0.0.1:5001",
 			}),
 		},
 	}

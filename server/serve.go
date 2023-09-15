@@ -6,18 +6,18 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"scrapey/handshake"
 	"strings"
 )
 
 func (s *ServerState) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	if req.Method == http.MethodConnect {
-		_, password, err := parseProxyAuth(req)
+		_, authToken, err := parseProxyAuth(req)
 		if err != nil {
 			handleBadAuthHeader(w, err)
 			return
 		}
-		log.Println("received request for channel key:", password)
-		proxy, ok := s.popProxy(password)
+		proxy, ok := s.getProxy(authToken)
 		if !ok {
 			handleNoProxies(w)
 			return
@@ -70,15 +70,18 @@ func (s *ServerState) listenForProxies(host string) error {
 			conn.Close()
 			continue
 		}
-		channelKey := make([]byte, 1024)
-		i, err := conn.Read(channelKey)
+		authToken, err := handshake.ReceiveAuthToken(conn)
 		if err != nil {
-			log.Println("failed to read channel key", err)
+			log.Println("failed to receive auth token:", err)
 			conn.Close()
 			continue
 		}
-		keyStr := string(channelKey[:i])
-		log.Printf("adding new proxy for key %s\n", keyStr)
-		s.addProxy(keyStr, conn)
+		err = handshake.SendAuthStatus(conn, true)
+		if err != nil {
+			log.Println("failed to send auth status:", err)
+			conn.Close()
+			continue
+		}
+		s.addProxy(authToken, conn)
 	}
 }
