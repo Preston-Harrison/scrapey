@@ -31,23 +31,22 @@ You can configure the server's listening ports by modifying the `SERVER_PORT` an
 ### Usage
 ```bash
 # Run this on server with publicly accessable IP & ports
-./bin/server # Defaults to ports 5000 & 5001
+./server # Defaults to ports 5000 & 5001
 ```
 
 ```bash
 # Run this on any computer with outbound traffic enabled
-CHANNEL_KEY=some_long_secret SERVER_HOST=your_host:your_port ./bin/proxy
+AUTH_TOKEN=some_long_secret SERVER_HOST=your_host:your_port ./proxy
 ```
 
 ```go
-// Make your request. Note at the moment, username is ignored. Password should be the channel key.
-// This will change as it's dumb.
+// Make your request. Note at the moment, username is ignored. Password should be the auth token.
 func main() {
 	httpClient := &http.Client{
 		Transport: &http.Transport{
 			Proxy: http.ProxyURL(&url.URL{
-				Scheme: "https", // Using http exposes channel key.
-				User: url.UserPassword("", "your_channel_key"),
+				Scheme: "https", // Using http exposes the auth token.
+				User: url.UserPassword("", "your_auth_token"),
 				Host: "your_host:your_port",
 			}),
 		},
@@ -59,7 +58,7 @@ func main() {
 ## Proxy-Server interractions
 ### Initial handshake
 1. The proxy connects via TCP with the server.
-2. The proxy sends a auth token in a single frame.
+2. The proxy sends an auth token in a single frame.
 3. The server responds acknowledging the auth token is valid.
 4. The connection remains open until the server is ready to send a request.
 
